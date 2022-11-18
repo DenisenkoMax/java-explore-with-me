@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.category.dto.CategoryDtoAnswer;
+import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.service.CategoryService;
 import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.exception.NotFoundEx;
@@ -25,14 +25,14 @@ public class PublicCategoryController {
 
 
     @GetMapping
-    public ResponseEntity<List<CategoryDtoAnswer>> getAllUsers(
+    public ResponseEntity<List<CategoryDto>> getAllUsers(
             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) throws IllegalArgumentEx {
         return new ResponseEntity<>(categoryService.getAllCategories(from, size), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDtoAnswer>  getCategoryById(@PathVariable long id) throws NotFoundEx {
+    public ResponseEntity<CategoryDto>  getCategoryById(@PathVariable long id) throws NotFoundEx {
         return categoryService.getCategoryById(id).map(itemResult -> new ResponseEntity<>(itemResult,
                         HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));

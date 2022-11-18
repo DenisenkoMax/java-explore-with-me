@@ -1,14 +1,15 @@
 package ru.practicum.explore.event.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.category.dto.CategoryMapper;
-import ru.practicum.explore.event.dto.EventDtoPublicAnswer;
+import ru.practicum.explore.event.dto.EventMapper;
+import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.event.model.State;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
 import ru.practicum.explore.exception.IllegalArgumentEx;
+import ru.practicum.explore.request.model.Status;
 import ru.practicum.explore.validation.Validation;
 
 import java.time.LocalDateTime;
@@ -24,10 +25,10 @@ public class EventServiceImpl implements EventService {
     private final Validation validation;
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    /*   @Override
-    public List<EventDtoPublicAnswer> getAllPublicEvents(String text, Integer[] categories, Boolean paid,
-                                                         String stringRangeStart, String stringRangeEnd,
-                                                         Boolean onlyAvailable, int from, int size)
+       @Override
+    public List<EventShortDto> getAllPublicEvents(String text, Integer[] categories, Boolean paid,
+                                                  String stringRangeStart, String stringRangeEnd,
+                                                  Boolean onlyAvailable, String sort, int from, int size)
             throws IllegalArgumentEx {
         validation.validatePagination(from, size);
         Pageable pageable = PageRequest.of(from / size, size);
@@ -36,11 +37,9 @@ public class EventServiceImpl implements EventService {
         LocalDateTime rangeEnd =stringRangeEnd.isBlank()?LocalDateTime.MAX:LocalDateTime
                 .parse(stringRangeEnd, FORMATTER);
         validation.validateDate(rangeStart,rangeEnd);
-
-        return repository.getAllPublicEventsWithText(text, Arrays.asList(categories), paid, rangeStart, rangeEnd, onlyAvailable, pageable);
+        return repository.getEvents(text, Arrays.asList(categories), paid, rangeStart, rangeEnd, Status.CONFIRMED , State.PUBLISHED, pageable)
                 .stream().
-                map(p -> CategoryMapper.toCategoryDtoAnswer(p)).collect(Collectors.toList());
+                map(p -> EventMapper.toEventShortDto(p)).collect(Collectors.toList());
     }
 
-     */
 }

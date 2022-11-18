@@ -1,9 +1,6 @@
 package ru.practicum.explore.user.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import ru.practicum.explore.event.model.Event;
 
@@ -13,23 +10,22 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
+
 @Data
+@AllArgsConstructor
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@Table(name = "users")
 public class User implements Serializable {
-    public User(Long id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @OneToMany(mappedBy = "initiator",

@@ -1,12 +1,16 @@
-package ru.practicum.explore.event.dto;
+package ru.practicum.explore.category.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class EventDtoAnswer {
+@NoArgsConstructor
+@AllArgsConstructor
+public class NewCategoryDto {
     private Long id;
     @NotNull
     @NotEmpty

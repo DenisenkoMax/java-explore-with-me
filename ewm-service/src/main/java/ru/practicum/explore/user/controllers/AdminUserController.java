@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.exception.NotFoundEx;
+import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.service.UserService;
+import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.user.dto.UserDto;
-import ru.practicum.explore.user.dto.UserDtoAnswer;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,7 +28,7 @@ public class AdminUserController {
     private static final String PAGE_SIZE = "10";
 
     @GetMapping
-    public ResponseEntity<List<UserDtoAnswer>> getAllUsers(
+    public ResponseEntity<List<UserDto>> getAllUsers(
             @RequestParam(value = "ids", required = false) Long[] ids,
             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) throws IllegalArgumentEx {
@@ -35,8 +36,8 @@ public class AdminUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDtoAnswer> createUser(@Valid @RequestBody UserDto userDto) {
-        return userService.createUser(userDto).map(newUser -> new ResponseEntity<>(newUser, HttpStatus.OK))
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody NewUserRequest newUserRequest) {
+        return userService.createUser(newUserRequest).map(newUser -> new ResponseEntity<>(newUser, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 

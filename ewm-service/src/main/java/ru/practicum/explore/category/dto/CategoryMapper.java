@@ -3,28 +3,20 @@ package ru.practicum.explore.category.dto;
 import ru.practicum.explore.category.model.Category;
 
 public class CategoryMapper {
-    public static CategoryDtoAnswer toCategoryDtoAnswer(Category category) {
+    public static CategoryDto toCategoryDto (Category category) {
         if (category == null) return null;
-        else return new CategoryDtoAnswer(
+        else return new CategoryDto(
                 category.getId(),
                 category.getName()
         );
     }
 
 
-    public static Category toCategory(CategoryDto categoryDto) {
-        if (categoryDto == null) return null;
+    public static Category toCategory(NewCategoryDto newCategoryDto) {
+        if (newCategoryDto == null) return null;
         else return new Category(
                 0L,
-                categoryDto.getName()
-        );
-    }
-
-    public static Category toCategory(CategoryDtoPatch categoryDtoPatch) {
-        if (categoryDtoPatch == null) return null;
-        else return new Category(
-                categoryDtoPatch.getId(),
-                categoryDtoPatch.getName()
+                newCategoryDto.getName()
         );
     }
 }

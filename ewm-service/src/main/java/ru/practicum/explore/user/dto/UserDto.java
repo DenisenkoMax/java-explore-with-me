@@ -1,23 +1,15 @@
 package ru.practicum.explore.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
-    @NotNull
-    @NotEmpty
+    private Long id;
     private String name;
-    @NotNull
-    @NotEmpty
-    @Email
     private String email;
-
-    public UserDto(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
 }

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.category.dto.NewCategoryDto;
 import ru.practicum.explore.category.dto.CategoryDto;
-import ru.practicum.explore.category.dto.CategoryDtoAnswer;
-import ru.practicum.explore.category.dto.CategoryDtoPatch;
 import ru.practicum.explore.category.dto.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
@@ -25,17 +24,17 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public Optional<CategoryDtoAnswer> createCategory(CategoryDto categoryDto) {
+    public Optional<CategoryDto> createCategory(NewCategoryDto newCategoryDto) {
         return Optional.ofNullable
-                (CategoryMapper.toCategoryDtoAnswer(repository.save(CategoryMapper.toCategory(categoryDto))));
+                (CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategory(newCategoryDto))));
     }
     @Override
-    public Optional<CategoryDtoAnswer> updateCategory(CategoryDtoPatch categoryDtoPatch) throws NotFoundEx {
-        validation.validateCategory(categoryDtoPatch.getId());
-        Category category = repository.findById(categoryDtoPatch.getId()).get();
-        category.setName(categoryDtoPatch.getName());
+    public Optional<CategoryDto> updateCategory(CategoryDto categoryDto) throws NotFoundEx {
+        validation.validateCategory(categoryDto.getId());
+        Category category = repository.findById(categoryDto.getId()).get();
+        category.setName(categoryDto.getName());
         return Optional.ofNullable
-                (CategoryMapper.toCategoryDtoAnswer(repository.save(category)));
+                (CategoryMapper.toCategoryDto(repository.save(category)));
     }
 
     @Override
@@ -45,17 +44,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDtoAnswer> getAllCategories(int from, int size) throws IllegalArgumentEx {
+    public List<CategoryDto> getAllCategories(int from, int size) throws IllegalArgumentEx {
         validation.validatePagination(from, size);
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
         return  repository.findAll(pageable).stream().
-                map(p -> CategoryMapper.toCategoryDtoAnswer(p)).collect(Collectors.toList());
+                map(p -> CategoryMapper.toCategoryDto(p)).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CategoryDtoAnswer> getCategoryById(long id) throws NotFoundEx {
+    public Optional<CategoryDto> getCategoryById(long id) throws NotFoundEx {
         validation.validateCategory(id);
-        return Optional.ofNullable(CategoryMapper.toCategoryDtoAnswer(repository.findById(id).get()));
+        return Optional.ofNullable(CategoryMapper.toCategoryDto(repository.findById(id).get()));
     }
 }
