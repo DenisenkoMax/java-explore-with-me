@@ -30,8 +30,7 @@ public class StatsServiceImpl implements StatsService {
         List<List<Object>> hits = new ArrayList<>();
         if ((uris != null) & unique) {
             hits = statsRepositoryJpa.findAllByUrisAndUnique(start, end, uris);
-        }
-        else if (uris != null && !unique) {
+        } else if (uris != null && !unique) {
             hits = statsRepositoryJpa.findAllByUris(start, end, uris);
         } else if (uris == null && unique) {
             hits = statsRepositoryJpa.findAllByUnique(start, end);

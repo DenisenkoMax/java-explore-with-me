@@ -5,11 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.compilation.model.Compilation;
 import ru.practicum.explore.user.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -65,5 +68,10 @@ public class Event implements Serializable {
     @JoinColumn(name = "category_id")
     @ToString.Exclude
     private Category category;
+
+    @ManyToMany
+    @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "compilation_id"))
+    private Set<Compilation> compilations = new HashSet<>();
 
 }

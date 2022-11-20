@@ -9,6 +9,8 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.service.EventService;
 import ru.practicum.explore.exception.IllegalArgumentEx;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -20,8 +22,6 @@ import java.util.List;
 )
 public class PublicEventController {
     private final EventService eventService;
-    private static final String FIRST_ELEMENT = "0";
-    private static final String PAGE_SIZE = "10";
 
     @GetMapping("/events")
     public ResponseEntity<List<EventShortDto>> getAllPublicEvents(
@@ -32,11 +32,8 @@ public class PublicEventController {
             @RequestParam(name = "rangeEnd", defaultValue = "") String rangeEnd,
             @RequestParam(name = "onlyAvailable") Boolean onlyAvailable,
             @RequestParam(name = "sort") String sort,
-            @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
-            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) throws IllegalArgumentEx {
-        if ((paid == null) || (onlyAvailable == null)) {
-            new IllegalArgumentException("Unset paid or onlyAvailable variables");
-        }
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") int size) throws IllegalArgumentEx {
         return new ResponseEntity<>(eventService.getAllPublicEvents(
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable,sort, from, size), HttpStatus.OK);
     }

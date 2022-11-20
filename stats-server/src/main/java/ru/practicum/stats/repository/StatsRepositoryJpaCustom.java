@@ -9,18 +9,18 @@ import java.util.List;
 
 public interface StatsRepositoryJpaCustom extends JpaRepository<EndpointHit, Long> {
     @Query("SELECT  DISTINCT COUNT (distinct e.ip), e.uri, e.app FROM EndpointHit e " +
-            "GROUP BY e.uri, e.app, e.timestamp HAVING e.timestamp >= ?1 AND e.timestamp <= ?2 AND e.uri IN ?3")
+            "WHERE e.timestamp >= ?1 AND e.timestamp <= ?2 AND e.uri IN ?3 GROUP BY e.uri, e.app")
     List<List<Object>> findAllByUrisAndUnique(LocalDateTime start, LocalDateTime end, String[] uris);
 
     @Query("SELECT DISTINCT COUNT (e.ip), e.uri, e.app FROM EndpointHit e " +
-            "GROUP BY e.uri, e.app, e.timestamp HAVING e.timestamp >= ?1 AND e.timestamp <= ?2 AND e.uri IN ?3")
+            "where e.timestamp >= ?1 AND e.timestamp <= ?2 AND e.uri IN ?3 GROUP BY e.uri, e.app")
     List<List<Object>> findAllByUris(LocalDateTime start, LocalDateTime end, String[] uris);
 
     @Query("SELECT  DISTINCT COUNT (distinct e.ip), e.uri, e.app FROM EndpointHit e " +
-            "GROUP BY e.uri, e.app, e.timestamp HAVING e.timestamp >= ?1 AND e.timestamp <= ?2")
+            "WHERE e.timestamp >= ?1 AND e.timestamp <= ?2 GROUP BY e.uri, e.app ")
     List<List<Object>> findAllByUnique(LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT DISTINCT count (e.ip), e.uri, e.app FROM EndpointHit e " +
-            "GROUP BY e.uri, e.app, e.timestamp HAVING e.timestamp >= ?1 AND e.timestamp <= ?2")
+            "WHERE e.timestamp >= ?1 AND e.timestamp <= ?2 GROUP BY e.uri, e.app")
     List<List<Object>> findAllByDate(LocalDateTime start, LocalDateTime end);
 }
