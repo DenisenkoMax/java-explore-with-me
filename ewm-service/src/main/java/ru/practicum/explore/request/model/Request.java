@@ -9,12 +9,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "requests")
 public class Request implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +27,7 @@ public class Request implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id")
     @ToString.Exclude
-    private Event requester;
+    private User requester;
 
     @Column(name = "created")
     private LocalDateTime created;

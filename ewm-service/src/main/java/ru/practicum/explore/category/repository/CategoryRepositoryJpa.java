@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.explore.category.model.Category;
 
 @Repository
-public interface CategoryRepositoryJpa extends JpaRepository<Category, Long> {
+public interface CategoryRepositoryJpa extends JpaRepository<Category, Long>, CategoriesRepositoryJpaCustom {
 
 }

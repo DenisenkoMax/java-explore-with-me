@@ -1,9 +1,6 @@
 package ru.practicum.explore.event.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.compilation.model.Compilation;
 import ru.practicum.explore.user.model.User;
@@ -15,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@AllArgsConstructor
 @Table(name = "events")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
@@ -22,6 +20,7 @@ public class Event implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "annotation")
@@ -46,7 +45,7 @@ public class Event implements Serializable {
     private String description;
 
     @Column(name = "participant_limit")
-    private int participantLimit;
+    private Integer participantLimit;
 
     @Column(name = "request_moderation")
     private Boolean requestModeration;
@@ -55,8 +54,8 @@ public class Event implements Serializable {
     private State state;
 
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "locationLon", column = @Column(name = "location_lon")),
-            @AttributeOverride(name = "locationLat", column = @Column(name = "location_lat"))})
+    @AttributeOverrides({@AttributeOverride(name = "lon", column = @Column(name = "location_lon")),
+            @AttributeOverride(name = "lat", column = @Column(name = "location_lat"))})
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,5 +72,8 @@ public class Event implements Serializable {
     @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "compilation_id"))
     private Set<Compilation> compilations = new HashSet<>();
-
+    @Column(name = "views")
+    private int views;
+    @Column(name = "confirm_requests")
+    private int confirmRequests;
 }

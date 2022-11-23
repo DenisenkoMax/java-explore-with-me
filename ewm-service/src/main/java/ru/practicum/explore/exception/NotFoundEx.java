@@ -1,7 +1,11 @@
 package ru.practicum.explore.exception;
 
-public class NotFoundEx extends Exception {
-    public NotFoundEx(String message) {
-        super(message);
-    }
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class NotFoundEx extends RuntimeException {
+    private String message;
+    private long id;
 }

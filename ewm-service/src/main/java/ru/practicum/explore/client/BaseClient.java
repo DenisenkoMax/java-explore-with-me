@@ -31,21 +31,30 @@ public class BaseClient {
                 requestFactory(HttpComponentsClientHttpRequestFactory::new).build();
     }
 
-
-    public List<ViewStats> getStats(String start, String end, @Nullable String[] uris, boolean unique) {
+    public HashMap<String, Integer> getStats(LocalDateTime strStart, LocalDateTime strEnd, @Nullable String[] uris, boolean unique) {
         Map<String, Object> parameters = new HashMap<>();
+        List<ViewStats> resultList;
+        HashMap<String, Integer> result = new HashMap<>();
+        String start =strStart.format(FORMATTER);
+        String end =strEnd.format(FORMATTER);
+
         if (uris != null) {
-            parameters = Map.of("start", start, "end", end, "uris", uris, "unique", unique);
-            return rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET,
+            parameters = Map.of("start", start, "end", end,
+                    "uris", uris, "unique", unique);
+            resultList = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET,
                     null, new ParameterizedTypeReference<List<ViewStats>>() {
                     }, parameters).getBody();
         } else {
-            parameters = Map.of("start", start, "end", end, "unique", unique);
-            return rest.exchange("/stats?start={start}&end={end}&unique={unique}", HttpMethod.GET,
+            parameters = Map.of("start", start, "end", end,
+                    "unique", unique);
+            resultList = rest.exchange("/stats?start={start}&end={end}&unique={unique}", HttpMethod.GET,
                     null, new ParameterizedTypeReference<List<ViewStats>>() {
                     }, parameters).getBody();
         }
-
+        for (ViewStats viewStats : resultList) {
+            result.put(viewStats.getUri(), viewStats.getHits());
+        }
+        return result;
     }
 
     public void addHit(HttpServletRequest request) {

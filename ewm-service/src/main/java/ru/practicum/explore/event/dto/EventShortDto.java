@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class EventShortDto {
     private Long id;
     private String annotation;
-    private CategoryDto categoryDto;
+    private CategoryDto category;
     private int confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
