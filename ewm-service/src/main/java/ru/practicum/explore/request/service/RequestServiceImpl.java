@@ -67,7 +67,7 @@ public class RequestServiceImpl implements RequestService {
         validation.validateUser(userId);
         validation.validateRequest(requestId);
         Request request = requestRepositoryJpa.findById(requestId).get();
-        if (request.getRequester().getId().equals(userId)) {
+        if (!request.getRequester().getId().equals(userId)) {
             throw new ForbiddenEx("Чужую заявку отменить нельзя");
         }
         if (request.getStatus().equals(Status.REJECTED) || request.getStatus().equals(Status.CANCELED)) {
