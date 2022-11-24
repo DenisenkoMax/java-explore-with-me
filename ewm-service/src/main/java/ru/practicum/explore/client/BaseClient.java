@@ -27,8 +27,8 @@ public class BaseClient {
 
     public BaseClient(@Value("${stats-server.url}") String uri, RestTemplateBuilder rest) {
         this.uri = uri;
-        this.rest = rest.uriTemplateHandler(new DefaultUriBuilderFactory(uri)).
-                requestFactory(HttpComponentsClientHttpRequestFactory::new).build();
+        this.rest = rest.uriTemplateHandler(new DefaultUriBuilderFactory(uri))
+                .requestFactory(HttpComponentsClientHttpRequestFactory::new).build();
     }
 
     public HashMap<String, Integer> getStats(LocalDateTime strStart, LocalDateTime strEnd, @Nullable String[] uris,

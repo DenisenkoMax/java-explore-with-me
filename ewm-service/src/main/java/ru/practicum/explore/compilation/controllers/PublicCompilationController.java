@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.dto.CompilationDto;
-import ru.practicum.explore.compilation.service.CompilationService;;
+import ru.practicum.explore.compilation.service.CompilationService;
+
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;

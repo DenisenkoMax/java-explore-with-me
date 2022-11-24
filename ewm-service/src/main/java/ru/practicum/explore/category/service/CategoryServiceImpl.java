@@ -28,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
         if (repository.findAllByName(newCategoryDto.getName()) > 0) {
             throw new ConflictEx(newCategoryDto.getName(), "categories");
         }
-        return Optional.ofNullable
-                (CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategory(newCategoryDto))));
+        return Optional.ofNullable(CategoryMapper
+                .toCategoryDto(repository.save(CategoryMapper.toCategory(newCategoryDto))));
     }
 
     @Override
@@ -40,8 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
         validation.validateCategory(categoryDto.getId());
         Category category = repository.findById(categoryDto.getId()).get();
         category.setName(categoryDto.getName());
-        return Optional.ofNullable
-                (CategoryMapper.toCategoryDto(repository.save(category)));
+        return Optional.ofNullable(CategoryMapper
+                .toCategoryDto(repository.save(category)));
     }
 
     @Override
@@ -55,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
         validation.validatePagination(from, size);
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
-        return repository.findAll(pageable).stream().
-                map(p -> CategoryMapper.toCategoryDto(p)).collect(Collectors.toList());
+        return repository.findAll(pageable).stream()
+                .map(p -> CategoryMapper.toCategoryDto(p)).collect(Collectors.toList());
     }
 
     @Override

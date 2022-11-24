@@ -20,6 +20,7 @@ public class Category implements Serializable {
         this.id = id;
         this.name = name;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -27,8 +27,8 @@ public class AdminCategoryController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         log.info("Добавлена категория: {}", newCategoryDto);
-        return categoryService.createCategory(newCategoryDto).map(newUser -> new ResponseEntity<>
-                (newUser, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+        return categoryService.createCategory(newCategoryDto).map(newUser -> new ResponseEntity<>(
+                newUser, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @DeleteMapping("/{id}")
