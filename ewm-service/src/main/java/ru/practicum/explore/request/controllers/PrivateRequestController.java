@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.service.RequestService;
+
 import java.util.List;
 
 @Slf4j
@@ -16,8 +18,9 @@ import java.util.List;
         consumes = MediaType.ALL_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
 )
-public class PrivateCategoryController {
+public class PrivateRequestController {
     private final RequestService requestService;
+
     @GetMapping
     public List<RequestDto> getAllRequests(@PathVariable Long userId) {
         log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях {}", userId);
@@ -25,7 +28,12 @@ public class PrivateCategoryController {
     }
 
     @PostMapping
-    public RequestDto addRequests(@PathVariable Long userId, @RequestParam(value = "eventId") Long eventId) {
+    public RequestDto addRequests(@PathVariable Long userId,
+                                  @RequestParam(value = "eventId", required = false) Long eventId) {
+        if (eventId == null) {
+            throw new IllegalArgumentEx("Добавление запроса от текущего пользователя на" +
+                    " участие в событии. В запросе отсутвует обязательное поле requests");
+        }
         log.info("Добавление запроса от текущего пользователя на участие в событии {}", eventId);
         return requestService.addRequest(userId, eventId);
     }

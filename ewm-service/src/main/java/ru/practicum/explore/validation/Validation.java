@@ -3,6 +3,7 @@ package ru.practicum.explore.validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
+import ru.practicum.explore.compilation.repository.CompilationRepositoryJpa;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
@@ -24,6 +25,7 @@ public class Validation {
     private final EventRepositoryJpa eventRepositoryJpa;
     private final CategoryRepositoryJpa categoryRepository;
     private final RequestRepositoryJpa requestRepositoryJpa;
+    private final CompilationRepositoryJpa compilationRepositoryJpa;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
  /*   private final ItemRepositoryJpa itemRepository;
     private final BookingRepositoryJpa bookingRepository;
@@ -31,7 +33,7 @@ public class Validation {
 
     public void validateDate(LocalDateTime start, LocalDateTime end) throws IllegalArgumentEx {
         if (end.isBefore(start)) {
-            throw new IllegalArgumentEx("Wrong date");
+            throw new IllegalArgumentEx("Дата завершения раньше чем дата старта");
         }
     }
 
@@ -71,6 +73,11 @@ public class Validation {
         }
     }
 
+    public void validateCompilation(Long compilationId) throws NotFoundEx {
+        if (compilationRepositoryJpa.findById(compilationId).isEmpty()) {
+            throw new NotFoundEx("Подборка не найдена", compilationId);
+        }
+    }
     public void validateUser(Long userId) throws NotFoundEx {
         if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundEx("Пользователь не найден", userId);

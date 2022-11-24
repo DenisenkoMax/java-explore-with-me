@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -71,7 +72,7 @@ public class Event implements Serializable {
     @ManyToMany
     @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "compilation_id"))
-    private Set<Compilation> compilations = new HashSet<>();
+    private List<Compilation> compilations;
     @Column(name = "views")
     private int views;
     @Column(name = "confirm_requests")
