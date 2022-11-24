@@ -18,42 +18,39 @@ public class Handler {
     //400
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleBadRequest(IllegalArgumentException exception) {
-        return new ResponseEntity<>(new ErrorResponse
-                (new String[]{}, exception.getMessage(),
-                        "For the requested operation the conditions are not met.",
-                        "FORBIDDEN"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorResponse(new String[]{}, exception.getMessage(),
+                "For the requested operation the conditions are not met.",
+                "FORBIDDEN"), HttpStatus.BAD_REQUEST);
     }
 
     //403
     @ExceptionHandler(ForbiddenEx.class)
     public ResponseEntity<Object> handleBadRequest(ForbiddenEx exception) {
-        return new ResponseEntity<>(new ErrorResponse
-                (new String[]{}, exception.getMessage(),
-                        "For the requested operation the conditions are not met.",
-                        "FORBIDDEN"), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new ErrorResponse(new String[]{}, exception.getMessage(),
+                "For the requested operation the conditions are not met.",
+                "FORBIDDEN"), HttpStatus.FORBIDDEN);
     }
 
     //404
     @ExceptionHandler(NotFoundEx.class)
     public ResponseEntity<Object> handleNotFound(NotFoundEx exception) {
-        return new ResponseEntity<>(new ErrorResponse
-                (new String[]{}, exception.getMessage(), "The required object was not found", "NOT_FOUND"),
+        return new ResponseEntity<>(new ErrorResponse(new String[]{},
+                exception.getMessage(), "The required object was not found", "NOT_FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
     //409
     @ExceptionHandler(ConflictEx.class)
     public ResponseEntity<Object> handleConflict(ConflictEx exception) {
-        return new ResponseEntity<>(new ErrorResponse
-                (new String[]{}, exception.getMessage(),
-                        "Integrity constraint has been violated", "NOT_FOUND"), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new ErrorResponse(new String[]{}, exception.getMessage(),
+                "Integrity constraint has been violated", "NOT_FOUND"), HttpStatus.CONFLICT);
     }
 
     //500
     @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
     public ResponseEntity<Object> handleInternalServerError(HttpServerErrorException.InternalServerError exception) {
-        return new ResponseEntity<>(new ErrorResponse
-                (exception.getMessage(), "Error occurred", "INTERNAL_SERVER_ERROR"), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(),
+                "Error occurred", "INTERNAL_SERVER_ERROR"), HttpStatus.CONFLICT);
     }
 
     private class ErrorResponse {
