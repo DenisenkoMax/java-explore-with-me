@@ -9,10 +9,8 @@ import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
 import ru.practicum.explore.client.BaseClient;
 import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.model.SortState;
 import ru.practicum.explore.event.model.State;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
-import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.exception.NotFoundEx;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.dto.RequestMapper;
@@ -22,6 +20,7 @@ import ru.practicum.explore.request.repository.RequestRepositoryJpa;
 import ru.practicum.explore.user.repository.UserRepositoryJpa;
 import ru.practicum.explore.validation.Validation;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -97,7 +96,7 @@ public class EventServiceImpl implements EventService {
     public List<RequestDto> getEventRequestsPrivate(Long userId, Long eventId) {
         validation.validateUser(userId);
         validation.validateEvent(eventId);
-      //  return requestRepositoryJpa.getEventRequestsPrivate(userId, eventId);
+        //  return requestRepositoryJpa.getEventRequestsPrivate(userId, eventId);
         return requestRepositoryJpa.getEventRequestsPrivate(userId, eventId)
                 .stream().map(p -> RequestMapper.toRequestDto(p)).collect(Collectors.toList());
     }
@@ -113,10 +112,10 @@ public class EventServiceImpl implements EventService {
             return RequestMapper.toRequestDto(request);
         }
         if (request.getStatus() == Status.CONFIRMED) {
-            throw new IllegalArgumentEx("Заявка уже была подтверждена ранее");
+            throw new IllegalArgumentException("Заявка уже была подтверждена ранее");
         }
         if (event.getConfirmRequests() == event.getParticipantLimit()) {
-            throw new IllegalArgumentEx("достигнут лимит запросов на участие");
+            throw new IllegalArgumentException("достигнут лимит запросов на участие");
         }
         request.setStatus(Status.CONFIRMED);
         event.setConfirmRequests(event.getConfirmRequests() + 1);
@@ -131,7 +130,7 @@ public class EventServiceImpl implements EventService {
         validation.validateEventOwner(userId, eventId);
         Request request = requestRepositoryJpa.findById(requestId).get();
         if (request.getStatus().equals(Status.REJECTED) || request.getStatus().equals(Status.CANCELED)) {
-            throw new IllegalArgumentEx("Заявка была отменена ранее");
+            throw new IllegalArgumentException("Заявка была отменена ранее");
         }
         request.setStatus(Status.REJECTED);
         return RequestMapper.toRequestDto(requestRepositoryJpa.save(request));
@@ -139,14 +138,18 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getAllEventsPublic(String text, Long[] categories, Boolean paid,
-                                                  String strStart, String strEnd,
-                                                  Boolean onlyAvailable, SortState sort, int from, int size)
-            throws IllegalArgumentEx {
-        Pageable pageable = PageRequest.of(from / size, size, getSort(sort));
+                                                  String strStart, String strEnd, Boolean onlyAvailable,
+                                                  String strSort, int from, int size, HttpServletRequest request) {
+        Pageable pageable = (strSort != null) ?
+                PageRequest.of(from / size, size, getSort(strSort)) :
+                PageRequest.of(from / size, size);
         List<Event> events = new ArrayList<>();
-        if (categories == null) categories = categoryRepositoryJpa.findAllId().toArray(new Long[0]);
-        LocalDateTime start = strStart.isBlank() ? LocalDateTime.now() : LocalDateTime.parse(strStart, FORMATTER);
-        LocalDateTime end = strEnd.isBlank() ? LocalDateTime.MAX : LocalDateTime.parse(strEnd, FORMATTER);
+        if (categories == null) categories = categoryRepositoryJpa.findAllId().stream()
+                .toArray(Long[]::new);
+        LocalDateTime start = ((strStart == null) || (strStart.isBlank())) ? LocalDateTime.now()
+                : LocalDateTime.parse(strStart, FORMATTER);
+        LocalDateTime end = ((strEnd == null) || (strStart.isBlank())) ? LocalDateTime.now().plusYears(1000)
+                : LocalDateTime.parse(strEnd, FORMATTER);
         validation.validateDate(start, end);
         List<Boolean> listPaid = (paid == null) ? List.of(true, false) : List.of(paid);
 
@@ -158,25 +161,35 @@ public class EventServiceImpl implements EventService {
                     State.PUBLISHED, pageable);
         }
         addViews(events);
+        baseClient.addHit(request);
         return events.stream()
                 .map(p -> EventMapper.toEventShortDto(p))
                 .collect(Collectors.toList());
     }
 
-    public EventFullDto getByIdPublic(Long eventId) {
+    public EventFullDto getByIdPublic(Long eventId, HttpServletRequest request) {
         Event event = eventRepositoryJpa.getEventByIdByState(eventId, State.PUBLISHED);
         if (event == null) {
             throw new NotFoundEx("Событие не найдено", eventId);
         }
         addViews(List.of(event));
+        baseClient.addHit(request);
         return EventMapper.toEventFullDto(event);
     }
 
-    private Sort getSort(SortState sort) {
-        if (sort == SortState.VIEWS) {
-            return Sort.by(Sort.Direction.DESC, "views");
+    private Sort getSort(String strSort) {
+        if (strSort == null) {
+            throw new IllegalArgumentException("Не указан тип сортировки");
         } else {
-            return Sort.by(Sort.Direction.DESC, "eventDate");
+            switch (strSort) {
+                case "EVENT_DATE":
+                    return Sort.by(Sort.Direction.DESC, "eventDate");
+
+                case "VIEWS":
+                    return Sort.by(Sort.Direction.DESC, "views");
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип сортировки {} " + strSort);
+            }
         }
     }
 
@@ -193,8 +206,6 @@ public class EventServiceImpl implements EventService {
             if (views.get(key) != null) {
                 event.setViews(views.get(key));
             }
-
-
         }
     }
 
@@ -203,14 +214,21 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = new ArrayList<>();
         List<State> listStates = new ArrayList<>();
-        for (String strState : states) {
-            State state = State.from(strState)
-                    .orElseThrow(() -> new IllegalArgumentException("Неизместный статус {}" + strState));
-            listStates.add(state);
+        if (states == null) {
+            listStates = List.of(State.PUBLISHED, State.CANCELED, State.PENDING);
+        } else {
+            for (String strState : states) {
+                State state = State.from(strState)
+                        .orElseThrow(() -> new IllegalArgumentException("Неизместный статус {}" + strState));
+                listStates.add(state);
+            }
         }
-        if (categories == null) categories = categoryRepositoryJpa.findAllId().toArray(new Long[0]);
-        LocalDateTime start = strStart == null ? LocalDateTime.now() : LocalDateTime.parse(strStart, FORMATTER);
-        LocalDateTime end = strEnd == null ? LocalDateTime.MAX : LocalDateTime.parse(strEnd, FORMATTER);
+        if (categories == null) categories = categoryRepositoryJpa.findAllId().stream()
+                .toArray(Long[]::new);
+        LocalDateTime start = ((strStart == null) || (strStart.isBlank())) ? LocalDateTime.now()
+                : LocalDateTime.parse(strStart, FORMATTER);
+        LocalDateTime end = ((strEnd == null) || (strStart.isBlank())) ? LocalDateTime.now().plusYears(1000)
+                : LocalDateTime.parse(strEnd, FORMATTER);
         validation.validateDate(start, end);
         if (users == null) {
             events = eventRepositoryJpa.getAllAdmin(listStates, Arrays.asList(categories), start, end, pageable);
@@ -243,10 +261,10 @@ public class EventServiceImpl implements EventService {
         validation.validateEvent(eventId);
         Event event = eventRepositoryJpa.findById(eventId).get();
         if (LocalDateTime.now().plusHours(1).isAfter(event.getEventDate())) {
-            throw new IllegalArgumentEx("дата начала события должна быть не ранее чем за час от даты публикации");
+            throw new IllegalArgumentException("дата начала события должна быть не ранее чем за час от даты публикации");
         }
         if (event.getState() != State.PENDING) {
-            throw new IllegalArgumentEx("событие должно быть в состоянии ожидания публикации");
+            throw new IllegalArgumentException("событие должно быть в состоянии ожидания публикации");
         }
         event.setState(State.PUBLISHED);
         return EventMapper.toEventFullDto(eventRepositoryJpa.save(event));
@@ -256,10 +274,9 @@ public class EventServiceImpl implements EventService {
         validation.validateEvent(eventId);
         Event event = eventRepositoryJpa.findById(eventId).get();
         if (event.getState() != State.PENDING) {
-            throw new IllegalArgumentEx("событие должно быть в состоянии ожидания публикации");
+            throw new IllegalArgumentException("событие должно быть в состоянии ожидания публикации");
         }
         event.setState(State.CANCELED);
         return EventMapper.toEventFullDto(eventRepositoryJpa.save(event));
     }
-
 }

@@ -1,4 +1,5 @@
 package ru.practicum.stats.model;
+
 import java.util.List;
 
 public class StatsMapper {

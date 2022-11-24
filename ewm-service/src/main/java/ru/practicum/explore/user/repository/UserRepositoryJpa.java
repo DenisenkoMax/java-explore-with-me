@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.explore.user.model.User;
 
 @Repository
-public interface UserRepositoryJpa extends JpaRepository<User, Long> {
+public interface UserRepositoryJpa extends JpaRepository<User, Long>, UserRepositoryJpaCustom {
 
 }

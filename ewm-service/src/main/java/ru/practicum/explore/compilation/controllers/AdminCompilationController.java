@@ -1,6 +1,6 @@
 package ru.practicum.explore.compilation.controllers;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +8,11 @@ import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.service.CompilationService;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(
         value = "/admin",
         consumes = MediaType.ALL_VALUE,
@@ -20,7 +22,7 @@ public class AdminCompilationController {
     private final CompilationService compilationService;
 
     @PostMapping("/compilations")
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         log.info("Добавление подборки событий {}", newCompilationDto);
         return compilationService.addCompilation(newCompilationDto);
     }

@@ -4,19 +4,18 @@ import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventDto;
-import ru.practicum.explore.event.model.SortState;
-import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.request.dto.RequestDto;
-import ru.practicum.explore.request.model.Request;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
     List<EventShortDto> getAllEventsPublic(String text, Long[] categories, Boolean paid, String rangeStart,
-                                           String rangeEnd, Boolean onlyAvailable, SortState sort, int from, int size)
-            throws IllegalArgumentEx;
+                                           String rangeEnd, Boolean onlyAvailable, String sort,
+                                           int from, int size, HttpServletRequest request)
+            throws IllegalArgumentException;
 
-    EventFullDto getByIdPublic(Long eventId);
+    EventFullDto getByIdPublic(Long eventId, HttpServletRequest request);
 
     List<EventShortDto> getAllEventsPrivate(Long userId, int from, int size);
 
@@ -28,9 +27,9 @@ public interface EventService {
 
     RequestDto rejectRequestPrivate(Long userId, Long eventId, Long requestId);
 
-    EventFullDto updateEventPrivate(Long userId, UpdateEventDto updateEventDto) throws IllegalArgumentEx;
+    EventFullDto updateEventPrivate(Long userId, UpdateEventDto updateEventDto) throws IllegalArgumentException;
 
-    EventFullDto addEventPrivate(Long userId, NewEventDto newEventDto) throws IllegalArgumentEx;
+    EventFullDto addEventPrivate(Long userId, NewEventDto newEventDto) throws IllegalArgumentException;
 
     EventFullDto cancelEventPrivate(Long userId, Long eventId);
 

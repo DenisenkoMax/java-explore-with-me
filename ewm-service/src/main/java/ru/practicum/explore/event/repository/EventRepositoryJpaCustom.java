@@ -1,4 +1,5 @@
 package ru.practicum.explore.event.repository;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -52,6 +53,6 @@ public interface EventRepositoryJpaCustom extends JpaRepository<Event, Long> {
                     "AND (e.initiator.id IN ?5)"
     )
     List<Event> getAllByUsersAdmin(List<State> states, List<Long> categories, LocalDateTime start, LocalDateTime end,
-                                    List<Long> users,Pageable pageable);
+                                   List<Long> users, Pageable pageable);
 
 }

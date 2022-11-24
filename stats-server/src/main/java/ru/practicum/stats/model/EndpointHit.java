@@ -19,7 +19,6 @@ public class EndpointHit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NonNull
     @Column(name = "app", nullable = false, length = 50)
     private String app;
@@ -32,5 +31,4 @@ public class EndpointHit {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
-
 }

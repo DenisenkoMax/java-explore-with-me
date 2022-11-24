@@ -1,22 +1,17 @@
 package ru.practicum.explore.user.controllers;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.client.BaseClient;
-import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.exception.NotFoundEx;
 import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.service.UserService;
-import ru.practicum.explore.user.dto.UserShortDto;
+
 import ru.practicum.explore.user.dto.UserDto;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -24,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(
         value = "/admin/users",
         consumes = MediaType.ALL_VALUE,
@@ -33,12 +28,11 @@ import java.util.List;
 public class AdminUserController {
     private final UserService userService;
 
-
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(
             @RequestParam(value = "ids", required = false) Long[] ids,
             @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) throws IllegalArgumentEx {
+            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.info("Запрошены все пользователи");
         return new ResponseEntity<>(userService.getAllUsers(ids, from, size), HttpStatus.OK);
     }
@@ -55,5 +49,4 @@ public class AdminUserController {
         log.info("Удаление пользователя {}", id);
         userService.deleteUserById(id);
     }
-
 }

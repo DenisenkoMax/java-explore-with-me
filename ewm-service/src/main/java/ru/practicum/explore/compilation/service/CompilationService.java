@@ -17,5 +17,6 @@ public interface CompilationService {
     void setPinCompilation(Long compId, Boolean pinned);
 
     List<CompilationDto> getAllCompilations(Boolean pinned, int from, int size);
+
     CompilationDto getCompilationById(Long compId);
 }

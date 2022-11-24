@@ -1,6 +1,6 @@
 package ru.practicum.explore.event.controllers;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,6 @@ import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventDto;
 import ru.practicum.explore.event.service.EventService;
 import ru.practicum.explore.request.dto.RequestDto;
-import ru.practicum.explore.request.model.Request;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(
         value = "/users",
         consumes = MediaType.ALL_VALUE,
@@ -70,21 +69,16 @@ public class PrivateEventController {
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
     public RequestDto confirmEventRequest(@PathVariable Long userId, @PathVariable Long eventId,
-                                       @PathVariable Long reqId) {
+                                          @PathVariable Long reqId) {
         log.info("Подтверждение пользователем {} запроса {} на участие в событии {}", eventId, userId, reqId);
         return eventService.confirmRequestPrivate(userId, eventId, reqId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
     public RequestDto rejectEventRequest(@PathVariable Long userId,
-                                    @PathVariable Long eventId,
-                                    @PathVariable Long reqId) {
+                                         @PathVariable Long eventId,
+                                         @PathVariable Long reqId) {
         log.info("Отклонение пользователем {} запроса {} на участие в событии {}", eventId, userId, reqId);
         return eventService.rejectRequestPrivate(userId, eventId, reqId);
     }
-
-
-
-
-
 }

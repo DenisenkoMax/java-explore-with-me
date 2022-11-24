@@ -1,10 +1,9 @@
 package ru.practicum.explore.request.controllers;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.exception.IllegalArgumentEx;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.service.RequestService;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(
         value = "/users/{userId}/requests",
         consumes = MediaType.ALL_VALUE,
@@ -31,7 +30,7 @@ public class PrivateRequestController {
     public RequestDto addRequests(@PathVariable Long userId,
                                   @RequestParam(value = "eventId", required = false) Long eventId) {
         if (eventId == null) {
-            throw new IllegalArgumentEx("Добавление запроса от текущего пользователя на" +
+            throw new IllegalArgumentException("Добавление запроса от текущего пользователя на" +
                     " участие в событии. В запросе отсутвует обязательное поле requests");
         }
         log.info("Добавление запроса от текущего пользователя на участие в событии {}", eventId);
@@ -43,6 +42,4 @@ public class PrivateRequestController {
         log.info("Отмена своего {} запроса на участие в событии {}", userId, requestId);
         return requestService.cancelRequest(userId, requestId);
     }
-
-
 }

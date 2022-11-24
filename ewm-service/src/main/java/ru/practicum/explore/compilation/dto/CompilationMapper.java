@@ -2,20 +2,14 @@ package ru.practicum.explore.compilation.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.explore.category.dto.CategoryDto;
-import ru.practicum.explore.category.dto.NewCategoryDto;
-import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.compilation.model.Compilation;
-import ru.practicum.explore.compilation.repository.CompilationRepositoryJpa;
 import ru.practicum.explore.event.dto.EventMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
 import ru.practicum.explore.validation.Validation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component

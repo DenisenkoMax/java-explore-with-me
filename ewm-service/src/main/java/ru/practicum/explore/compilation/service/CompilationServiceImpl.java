@@ -15,9 +15,6 @@ import ru.practicum.explore.event.repository.EventRepositoryJpa;
 
 import ru.practicum.explore.validation.Validation;
 
-import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +43,7 @@ public class CompilationServiceImpl implements CompilationService {
         validation.validateEvent(eventId);
         Compilation compilation = compilationRepositoryJpa.findById(compId).get();
         List<Event> eventsList = compilation.getEventsCompilations();
-        eventsList.removeIf(p -> p.getId()==eventId);
+        eventsList.removeIf(p -> p.getId() == eventId);
         compilation.setEventsCompilations(eventsList);
         compilationRepositoryJpa.save(compilation);
     }
@@ -75,7 +72,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .stream().map(p -> compilationMapper.toCompilationDto(p)).collect(Collectors.toList());
     }
 
-    public CompilationDto getCompilationById(Long compId){
+    public CompilationDto getCompilationById(Long compId) {
         validation.validateCompilation(compId);
         return compilationMapper.toCompilationDto(compilationRepositoryJpa.findById(compId).get());
     }

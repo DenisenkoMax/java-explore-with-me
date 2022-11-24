@@ -5,13 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
-import ru.practicum.explore.exception.IllegalArgumentEx;
+import ru.practicum.explore.exception.ForbiddenEx;
 import ru.practicum.explore.request.dto.RequestDto;
 import ru.practicum.explore.request.dto.RequestMapper;
 import ru.practicum.explore.request.model.Request;
 import ru.practicum.explore.request.model.Status;
 import ru.practicum.explore.request.repository.RequestRepositoryJpa;
-import ru.practicum.explore.user.dto.UserMapper;
 import ru.practicum.explore.user.repository.UserRepositoryJpa;
 import ru.practicum.explore.validation.Validation;
 
@@ -39,16 +38,16 @@ public class RequestServiceImpl implements RequestService {
         validation.validateUser(userId);
         Event event = eventRepositoryJpa.findById(eventId).get();
         if (event.getState() != State.PUBLISHED) {
-            throw new IllegalArgumentEx("Нельзя запрашивать участие в необуликованном событии");
+            throw new ForbiddenEx("Нельзя запрашивать участие в необуликованном событии");
         }
         if (event.getInitiator().getId() == userId) {
-            throw new IllegalArgumentEx("Нельзя запрашивать участие в своем событии");
+            throw new ForbiddenEx("Нельзя запрашивать участие в своем событии");
         }
         if (event.getConfirmRequests() == event.getParticipantLimit()) {
-            throw new IllegalArgumentEx("Достигнут лимит запросов на участие");
+            throw new ForbiddenEx("Достигнут лимит запросов на участие");
         }
         if (!requestRepositoryJpa.getByRequesterByEvent(userId, eventId).isEmpty()) {
-            throw new IllegalArgumentEx("нельзя добавить повторный запрос");
+            throw new ForbiddenEx("нельзя добавить повторный запрос");
         }
         Request request = new Request();
         if (event.getRequestModeration()) {
@@ -69,10 +68,10 @@ public class RequestServiceImpl implements RequestService {
         validation.validateRequest(requestId);
         Request request = requestRepositoryJpa.findById(requestId).get();
         if (request.getRequester().getId() != userId) {
-            throw new IllegalArgumentEx("Чужую заявку отменить нельзя");
+            throw new ForbiddenEx("Чужую заявку отменить нельзя");
         }
         if (request.getStatus().equals(Status.REJECTED) || request.getStatus().equals(Status.CANCELED)) {
-            throw new IllegalArgumentEx("Заявка была отменена ранее");
+            throw new ForbiddenEx("Заявка была отменена ранее");
         } else {
             Event event = eventRepositoryJpa.findById(request.getEvent().getId()).get();
             event.setConfirmRequests(event.getConfirmRequests() - 1);

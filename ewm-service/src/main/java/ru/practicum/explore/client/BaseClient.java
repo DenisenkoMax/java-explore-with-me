@@ -31,12 +31,13 @@ public class BaseClient {
                 requestFactory(HttpComponentsClientHttpRequestFactory::new).build();
     }
 
-    public HashMap<String, Integer> getStats(LocalDateTime strStart, LocalDateTime strEnd, @Nullable String[] uris, boolean unique) {
+    public HashMap<String, Integer> getStats(LocalDateTime strStart, LocalDateTime strEnd, @Nullable String[] uris,
+                                             boolean unique) {
         Map<String, Object> parameters = new HashMap<>();
         List<ViewStats> resultList;
         HashMap<String, Integer> result = new HashMap<>();
-        String start =strStart.format(FORMATTER);
-        String end =strEnd.format(FORMATTER);
+        String start = strStart.format(FORMATTER);
+        String end = strEnd.format(FORMATTER);
 
         if (uris != null) {
             parameters = Map.of("start", start, "end", end,

@@ -9,9 +9,10 @@ import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
-import ru.practicum.explore.exception.IllegalArgumentEx;
+import ru.practicum.explore.exception.ConflictEx;
 import ru.practicum.explore.exception.NotFoundEx;
 import ru.practicum.explore.validation.Validation;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,14 +23,20 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepositoryJpa repository;
     private final Validation validation;
 
-
     @Override
     public Optional<CategoryDto> createCategory(NewCategoryDto newCategoryDto) {
+        if (repository.findAllByName(newCategoryDto.getName()) > 0) {
+            throw new ConflictEx(newCategoryDto.getName(), "categories");
+        }
         return Optional.ofNullable
                 (CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategory(newCategoryDto))));
     }
+
     @Override
-    public Optional<CategoryDto> updateCategory(CategoryDto categoryDto) throws NotFoundEx {
+    public Optional<CategoryDto> updateCategory(CategoryDto categoryDto) {
+        if (repository.findAllByName(categoryDto.getName()) > 0) {
+            throw new ConflictEx(categoryDto.getName(), "categories");
+        }
         validation.validateCategory(categoryDto.getId());
         Category category = repository.findById(categoryDto.getId()).get();
         category.setName(categoryDto.getName());
@@ -44,16 +51,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getAllCategories(int from, int size) throws IllegalArgumentEx {
+    public List<CategoryDto> getAllCategories(int from, int size) {
         validation.validatePagination(from, size);
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
-        return  repository.findAll(pageable).stream().
+        return repository.findAll(pageable).stream().
                 map(p -> CategoryMapper.toCategoryDto(p)).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CategoryDto> getCategoryById(long id) throws NotFoundEx {
+    public Optional<CategoryDto> getCategoryById(long id) {
         validation.validateCategory(id);
         return Optional.ofNullable(CategoryMapper.toCategoryDto(repository.findById(id).get()));
     }

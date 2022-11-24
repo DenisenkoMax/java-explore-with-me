@@ -2,13 +2,11 @@ package ru.practicum.explore.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.request.model.Request;
 
 import java.util.List;
 
 public interface RequestRepositoryJpaCustom extends JpaRepository<Request, Long> {
-
     @Query("SELECT r FROM Request  r WHERE (r.requester.id = ?1)")
     List<Request> findAllByRequesterId(Long requesterId);
 

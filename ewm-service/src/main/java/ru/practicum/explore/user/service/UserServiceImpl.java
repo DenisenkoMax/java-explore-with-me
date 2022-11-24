@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.exception.IllegalArgumentEx;
+import ru.practicum.explore.exception.ConflictEx;
 import ru.practicum.explore.exception.NotFoundEx;
 import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.model.User;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private final Validation validation;
 
     @Override
-    public List<UserDto> getAllUsers(Long[] ids, int from, int size) throws IllegalArgumentEx {
+    public List<UserDto> getAllUsers(Long[] ids, int from, int size) {
         validation.validatePagination(from, size);
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> createUser(NewUserRequest newUserRequest) {
+        if (repository.findAllByName(newUserRequest.getName()) > 0) {
+            throw new ConflictEx(newUserRequest.getName(), "users");
+        }
         return Optional.ofNullable(UserMapper.toUserDto(repository.save(UserMapper.toUser(newUserRequest))));
     }
 

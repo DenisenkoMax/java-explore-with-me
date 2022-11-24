@@ -1,6 +1,6 @@
 package ru.practicum.explore.event.controllers;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(
         value = "/admin/events",
         consumes = MediaType.ALL_VALUE,
@@ -45,6 +45,7 @@ public class AdminEventController {
     public EventFullDto updateEvent(@PathVariable Long eventId, @RequestBody NewEventDto newEventDto) {
         return eventService.updateEventByAdmin(eventId, newEventDto);
     }
+
     @PatchMapping("/{eventId}/publish")
     public EventFullDto publishEvent(@PathVariable Long eventId) {
         return eventService.publishEventAdmin(eventId);
@@ -54,6 +55,4 @@ public class AdminEventController {
     public EventFullDto rejectEvent(@PathVariable Long eventId) {
         return eventService.rejectEventAdmin(eventId);
     }
-
-
 }

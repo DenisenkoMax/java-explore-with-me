@@ -1,5 +1,5 @@
 package ru.practicum.explore.event.dto;
-import ru.practicum.explore.category.dto.CategoryDto;
+
 import ru.practicum.explore.category.dto.CategoryMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static EventFullDto toEventFullDto(Event event) {
         if (event == null) return null;
         else
@@ -69,7 +70,6 @@ public class EventMapper {
             );
     }
 
-
     public static Event toEvent(NewEventDto newEventDto) {
         if (newEventDto == null) return null;
         else
@@ -91,7 +91,6 @@ public class EventMapper {
                     null,
                     0,
                     0
-
             );
     }
 }
