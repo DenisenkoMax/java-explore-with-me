@@ -40,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getState() != State.PUBLISHED) {
             throw new ForbiddenEx("Нельзя запрашивать участие в необуликованном событии");
         }
-        if (event.getInitiator().getId() == userId) {
+        if (event.getInitiator().getId().equals(userId)) {
             throw new ForbiddenEx("Нельзя запрашивать участие в своем событии");
         }
         if (event.getConfirmRequests() == event.getParticipantLimit()) {
@@ -67,7 +67,7 @@ public class RequestServiceImpl implements RequestService {
         validation.validateUser(userId);
         validation.validateRequest(requestId);
         Request request = requestRepositoryJpa.findById(requestId).get();
-        if (request.getRequester().getId() != userId) {
+        if (request.getRequester().getId().equals(userId)) {
             throw new ForbiddenEx("Чужую заявку отменить нельзя");
         }
         if (request.getStatus().equals(Status.REJECTED) || request.getStatus().equals(Status.CANCELED)) {

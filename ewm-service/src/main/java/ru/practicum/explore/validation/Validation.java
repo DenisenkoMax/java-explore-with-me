@@ -39,7 +39,7 @@ public class Validation {
 
     public void validateEventOwnerState(Long userId, Long eventId) throws IllegalArgumentException {
 
-        if (userId != eventRepositoryJpa.findById(eventId).get().getInitiator().getId()) {
+        if (!eventRepositoryJpa.findById(eventId).get().getInitiator().getId().equals(userId)) {
             throw new IllegalArgumentException("Попытка именения события добавленного не текущим пользователем");
         }
     }
@@ -53,7 +53,7 @@ public class Validation {
     }
 
     public void validateEventOwner(Long userId, Long eventId) throws IllegalArgumentException {
-        if (eventRepositoryJpa.findById(eventId).get().getInitiator().getId() != userId) {
+        if (!eventRepositoryJpa.findById(eventId).get().getInitiator().getId().equals(userId)) {
             throw new IllegalArgumentException("Вы не являетесь инициатором события");
         }
     }
