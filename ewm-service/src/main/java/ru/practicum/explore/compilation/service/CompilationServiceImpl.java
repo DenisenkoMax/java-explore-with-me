@@ -43,7 +43,7 @@ public class CompilationServiceImpl implements CompilationService {
         validation.validateEvent(eventId);
         Compilation compilation = compilationRepositoryJpa.findById(compId).get();
         List<Event> eventsList = compilation.getEventsCompilations();
-        eventsList.removeIf(p -> p.getId().longValue() == eventId.longValue());
+        eventsList.removeIf(p -> p.getId().equals(eventId));
         compilation.setEventsCompilations(eventsList);
         compilationRepositoryJpa.save(compilation);
     }
