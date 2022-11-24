@@ -6,7 +6,6 @@ import ru.practicum.explore.compilation.model.Compilation;
 import ru.practicum.explore.user.model.User;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
 @Table(name = "events")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Event implements Serializable {
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
