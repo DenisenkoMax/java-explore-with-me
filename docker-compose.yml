@@ -47,6 +47,9 @@ services:
       - "6542:5432"
     volumes:
       - /var/lib/postgresql/data/
+    depends_on:
+      - stats-db
+      - stats-server
     environment:
       - POSTGRES_DB=ExploreWithMe
       - POSTGRES_USER=test
