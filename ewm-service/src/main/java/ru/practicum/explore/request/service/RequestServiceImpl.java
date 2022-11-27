@@ -43,7 +43,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getInitiator().getId().equals(userId)) {
             throw new ForbiddenEx("Нельзя запрашивать участие в своем событии");
         }
-        if (requestRepositoryJpa.getConfirmed(eventId) == event.getParticipantLimit()) {
+        if (requestRepositoryJpa.getConfirmed(eventId).equals(event.getParticipantLimit())) {
             throw new ForbiddenEx("Достигнут лимит запросов на участие");
         }
         if (!requestRepositoryJpa.getByRequesterByEvent(userId, eventId).isEmpty()) {

@@ -117,7 +117,7 @@ public class EventServiceImpl implements EventService {
         if (request.getStatus() == Status.CONFIRMED) {
             throw new IllegalArgumentException("Заявка уже была подтверждена ранее");
         }
-        if (requestRepositoryJpa.getConfirmed(eventId) == event.getParticipantLimit()) {
+        if (requestRepositoryJpa.getConfirmed(eventId).equals(event.getParticipantLimit())) {
             throw new IllegalArgumentException("достигнут лимит запросов на участие");
         }
         request.setStatus(Status.CONFIRMED);
