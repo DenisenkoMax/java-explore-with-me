@@ -5,12 +5,10 @@ import org.springframework.stereotype.Component;
 import ru.practicum.explore.category.dto.CategoryMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
-import ru.practicum.explore.event.repository.EventRepositoryJpa;
 import ru.practicum.explore.request.repository.RequestRepositoryJpa;
 import ru.practicum.explore.user.dto.UserMapper;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Component
