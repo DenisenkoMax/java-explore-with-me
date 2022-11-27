@@ -33,6 +33,6 @@ ewm-main-service-spec.json
 ewm-stats-service-spec.json
 
     Схема данных сновного сервиса:
-![](.idea)
+![](ewm-service.jpg)
     Схема данных сновного сервиса статистики:
 ![](stats-server.jpg)

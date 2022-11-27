@@ -30,8 +30,8 @@ public class Validation {
         }
     }
 
-    public void validateEventDate(String eventDate) throws IllegalArgumentException {
-        if (LocalDateTime.parse(eventDate, FORMATTER).isBefore(LocalDateTime.now().plusHours(2))) {
+    public void validateEventDate(LocalDateTime eventDate) throws IllegalArgumentException {
+        if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new IllegalArgumentException("Обратите внимание: дата и время на которые намечено событие не может" +
                     " быть раньше, чем через два часа от текущего момента");
         }

@@ -43,7 +43,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getInitiator().getId().equals(userId)) {
             throw new ForbiddenEx("Нельзя запрашивать участие в своем событии");
         }
-        if (event.getConfirmRequests() == event.getParticipantLimit()) {
+        if (requestRepositoryJpa.getConfirmed(eventId) == event.getParticipantLimit()) {
             throw new ForbiddenEx("Достигнут лимит запросов на участие");
         }
         if (!requestRepositoryJpa.getByRequesterByEvent(userId, eventId).isEmpty()) {
@@ -54,7 +54,6 @@ public class RequestServiceImpl implements RequestService {
             request.setStatus(Status.PENDING);
         } else {
             request.setStatus(Status.CONFIRMED);
-            event.setConfirmRequests(event.getConfirmRequests() + 1);
             eventRepositoryJpa.save(event);
         }
         request.setRequester(userRepositoryJpa.findById(userId).get());
@@ -74,7 +73,6 @@ public class RequestServiceImpl implements RequestService {
             throw new ForbiddenEx("Заявка была отменена ранее");
         } else {
             Event event = eventRepositoryJpa.findById(request.getEvent().getId()).get();
-            event.setConfirmRequests(event.getConfirmRequests() - 1);
             eventRepositoryJpa.save(event);
         }
         request.setStatus(Status.CANCELED);

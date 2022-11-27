@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
+import ru.practicum.explore.request.model.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,11 +15,12 @@ public interface EventRepositoryJpaCustom extends JpaRepository<Event, Long> {
             "SELECT e FROM Event e WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', ?1, '%')) " +
                     "OR LOWER(e.description) LIKE LOWER(CONCAT('%', ?1, '%'))) AND (e.paid IN ?2) " +
                     "AND (e.eventDate > ?3) AND (e.eventDate < ?4) AND (e.category.id IN ?5)" +
-                    " AND (e.participantLimit < e.confirmRequests) AND (e.state = ?6)"
+                    "  AND (e.state = ?6)" +
+                    " AND (e.participantLimit < (SELECT count (r) FROM Request r WHERE r.status=?7))"
     )
     List<Event> getEventsOnlyAvailable(String text, List<Boolean> listPaid, LocalDateTime rangeStart,
                                        LocalDateTime rangeEnd, List<Long> categories,
-                                       State state, Pageable pageable);
+                                       State state, Status status,  Pageable pageable);
 
     @Query(
             "SELECT e FROM Event e WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', ?1, '%')) " +

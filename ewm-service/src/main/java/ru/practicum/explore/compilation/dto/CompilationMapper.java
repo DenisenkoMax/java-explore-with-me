@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompilationMapper {
     private final EventRepositoryJpa eventRepositoryJpa;
+    private final EventMapper eventMapper;
     private final Validation validation;
 
     public Compilation toCompilation(NewCompilationDto newCompilationDto) {
@@ -49,7 +50,7 @@ public class CompilationMapper {
                     compilation.getTitle()
             );
             compilationDto.setEvents(compilation.getEventsCompilations().stream()
-                    .map(p -> EventMapper.toEventShortDto(p)).collect(Collectors.toList()));
+                    .map(p -> eventMapper.toEventShortDto(p)).collect(Collectors.toList()));
             return compilationDto;
         }
     }

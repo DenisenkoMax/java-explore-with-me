@@ -22,13 +22,13 @@ public class Request implements Serializable {
     @ToString.Exclude
     private Event event;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester_id")
+    @JoinColumn(name = "requester_id", nullable = false)
     @ToString.Exclude
     private User requester;
-    @Column(name = "created")
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Status status;
 }
 

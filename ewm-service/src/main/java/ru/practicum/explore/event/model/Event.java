@@ -22,57 +22,51 @@ public class Event implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "annotation")
+    @Column(name = "annotation",nullable = false)
     private String annotation;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "paid")
+    @Column(name = "paid", nullable = false)
     private Boolean paid;
 
     @Column(name = "publishet_on")
     private LocalDateTime publishetOn;
 
-    @Column(name = "event_date")
+    @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
-    @Column(name = "created")
+    @Column(name = "created", nullable = false)
     private LocalDateTime createdOn;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "participant_limit")
+    @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
 
-    @Column(name = "request_moderation")
+    @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
     private State state;
 
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "lon", column = @Column(name = "location_lon")),
-            @AttributeOverride(name = "lat", column = @Column(name = "location_lat"))})
+    @AttributeOverrides({@AttributeOverride(name = "lon", column = @Column(name = "location_lon", nullable = false)),
+            @AttributeOverride(name = "lat", column = @Column(name = "location_lat", nullable = false))})
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id")
     @ToString.Exclude
     private User initiator;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     @ToString.Exclude
     private Category category;
-
     @ManyToMany
     @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "compilation_id"))
     private List<Compilation> compilations;
-    @Column(name = "views")
-    private int views;
-    @Column(name = "confirm_requests")
-    private int confirmRequests;
 }

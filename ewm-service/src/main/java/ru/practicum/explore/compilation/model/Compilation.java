@@ -25,8 +25,8 @@ public class Compilation implements Serializable {
     @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> eventsCompilations;
-    @Column(name = "pinned")
+    @Column(name = "pinned", nullable = false)
     private boolean pinned;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 }
