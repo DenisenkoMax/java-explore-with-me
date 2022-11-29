@@ -69,4 +69,6 @@ public class Event implements Serializable {
     @JoinTable(name = "events_compilations", joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "compilation_id"))
     private List<Compilation> compilations;
+    @Transient
+    private Integer views;
 }
