@@ -29,7 +29,7 @@ public class EventMapper {
                     UserMapper.toUserShortDto(event.getInitiator()),
                     event.getPaid(),
                     event.getTitle(),
-                    0,
+                    event.getViews() == null ? 0 : event.getViews(),
                     event.getCreatedOn(),
                     event.getDescription(),
                     event.getLocation(),
@@ -52,7 +52,7 @@ public class EventMapper {
                     UserMapper.toUserShortDto(event.getInitiator()),
                     event.getPaid(),
                     event.getTitle(),
-                    0
+                    event.getViews() == null ? 0 : event.getViews()
             );
     }
 
@@ -75,7 +75,8 @@ public class EventMapper {
                     newEventDto.getLocation(),
                     null,
                     null,
-                    null
+                    null,
+                    0
             );
     }
 }
