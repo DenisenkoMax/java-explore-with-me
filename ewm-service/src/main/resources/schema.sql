@@ -38,7 +38,9 @@ CREATE TABLE IF NOT EXISTS events
     participant_limit INT NOT NULL,
     location_lat  NUMERIC NOT NULL,
     location_lon  NUMERIC NOT NULL,
-    state VARCHAR(30)
+    state VARCHAR(30),
+    comment_available BOOLEAN,
+    comment_moderation BOOLEAN
     );
 
 CREATE TABLE IF NOT EXISTS requests

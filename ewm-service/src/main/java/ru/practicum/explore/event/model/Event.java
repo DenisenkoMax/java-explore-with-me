@@ -71,4 +71,10 @@ public class Event implements Serializable {
     private List<Compilation> compilations;
     @Transient
     private Integer views;
+    @JoinColumn(name = "comment available")
+    @ToString.Exclude
+    private Boolean commentAvailable;
+    @JoinColumn(name = "comment moderation")
+    @ToString.Exclude
+    private Boolean commentModeration;
 }

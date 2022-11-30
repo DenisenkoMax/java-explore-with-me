@@ -3,6 +3,7 @@ package ru.practicum.explore.validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
+import ru.practicum.explore.comment.repository.CommentRepositoryJpa;
 import ru.practicum.explore.compilation.repository.CompilationRepositoryJpa;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.State;
@@ -22,6 +23,7 @@ public class Validation {
     private final CategoryRepositoryJpa categoryRepository;
     private final RequestRepositoryJpa requestRepositoryJpa;
     private final CompilationRepositoryJpa compilationRepositoryJpa;
+    private final CommentRepositoryJpa commentRepositoryJpa;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void validateDate(LocalDateTime start, LocalDateTime end) throws IllegalArgumentException {
@@ -52,6 +54,17 @@ public class Validation {
         }
     }
 
+    public void validateCommentOwner(Long userId, Long commentId){
+        if (!commentRepositoryJpa.findById(commentId).get().getCommenter().getId().equals(userId)) {
+            throw new IllegalArgumentException("Вы не являетесь инициатором события");
+        }
+    }
+
+    public void validateComment(Long commentId) throws NotFoundEx {
+        if (!commentRepositoryJpa.findById(commentId).isEmpty()) {
+            throw new NotFoundEx("commentId", commentId);
+        }
+    }
     public void validateEventOwner(Long userId, Long eventId) throws IllegalArgumentException {
         if (!eventRepositoryJpa.findById(eventId).get().getInitiator().getId().equals(userId)) {
             throw new IllegalArgumentException("Вы не являетесь инициатором события");

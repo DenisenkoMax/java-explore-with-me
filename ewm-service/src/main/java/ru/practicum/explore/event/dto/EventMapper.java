@@ -76,7 +76,9 @@ public class EventMapper {
                     null,
                     null,
                     null,
-                    0
+                    0,
+                    newEventDto.getCommentAvailable() == null ? true : newEventDto.getCommentAvailable(),
+                    newEventDto.getCommentModeration() == null ? false : newEventDto.getCommentModeration()
             );
     }
 }
