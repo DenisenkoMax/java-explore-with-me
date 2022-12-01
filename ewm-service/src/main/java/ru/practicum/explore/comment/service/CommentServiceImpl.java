@@ -1,10 +1,5 @@
 package ru.practicum.explore.comment.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import ru.practicum.explore.comment.dto.*;
 import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.comment.repository.CommentRepositoryJpa;
@@ -13,6 +8,11 @@ import ru.practicum.explore.event.repository.EventRepositoryJpa;
 import ru.practicum.explore.request.repository.RequestRepositoryJpa;
 import ru.practicum.explore.user.repository.UserRepositoryJpa;
 import ru.practicum.explore.validation.Validation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
