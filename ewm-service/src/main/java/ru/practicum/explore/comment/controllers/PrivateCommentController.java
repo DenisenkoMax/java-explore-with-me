@@ -33,6 +33,7 @@ public class PrivateCommentController {
         log.info("Добавление комментария от текущего пользователя {} к событию  {}", userId, eventId);
         return commentService.addComment(userId, eventId, newCommentDto);
     }
+
     //Обновление комментария
     @PutMapping
     public CommentDto updateComment(@PathVariable Long userId,
@@ -62,7 +63,7 @@ public class PrivateCommentController {
 
     @PatchMapping("/{commentId}/publish")
     public CommentDto publishEvent(@PathVariable Long userId, @PathVariable Long commentId) {
-        log.info("Одобрение на модерацию комментария {} пользователем {}",commentId, userId);
+        log.info("Одобрение на модерацию комментария {} пользователем {}", commentId, userId);
         return commentService.publishCommentUserPrivate(userId, commentId);
     }
 
@@ -70,6 +71,6 @@ public class PrivateCommentController {
     public void deleteCommentById(@PathVariable Long userId,
                                   @PathVariable Long commentId) {
         log.info("Запрос на удаление комментария {} на событие пользователя {}", userId);
-            commentService.deleteCommentByIdPrivate(userId, commentId);
+        commentService.deleteCommentByIdPrivate(userId, commentId);
     }
 }

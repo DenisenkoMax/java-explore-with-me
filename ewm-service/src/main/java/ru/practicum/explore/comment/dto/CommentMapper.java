@@ -37,6 +37,7 @@ public class CommentMapper {
                 comment.getPublished()
         );
     }
+
     public ShortCommentDto toShortCommentDto(Comment comment) {
         if (comment == null) return null;
         else return new ShortCommentDto(

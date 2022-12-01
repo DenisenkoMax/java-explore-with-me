@@ -54,18 +54,19 @@ public class Validation {
         }
     }
 
-    public void validateCommentOwner(Long userId, Long commentId){
+    public void validateCommentOwner(Long userId, Long commentId) {
         if (!commentRepositoryJpa.findById(commentId).get().getCommenter().getId().equals(userId)) {
             throw new IllegalArgumentException("Вы не являетесь инициатором события");
         }
     }
 
-    public void validateComment(Long commentId) throws NotFoundEx {
+    public void validateComment(Long commentId) {
         if (commentRepositoryJpa.findById(commentId).isEmpty()) {
             throw new NotFoundEx("commentId", commentId);
         }
     }
-    public void validateEventOwner(Long userId, Long eventId) throws IllegalArgumentException {
+
+    public void validateEventOwner(Long userId, Long eventId) {
         if (!eventRepositoryJpa.findById(eventId).get().getInitiator().getId().equals(userId)) {
             throw new IllegalArgumentException("Вы не являетесь инициатором события");
         }
