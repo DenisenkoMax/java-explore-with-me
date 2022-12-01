@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.comment.dto.*;
 import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.comment.repository.CommentRepositoryJpa;
+import ru.practicum.explore.event.model.State;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
 import ru.practicum.explore.request.repository.RequestRepositoryJpa;
 import ru.practicum.explore.user.repository.UserRepositoryJpa;
@@ -18,12 +19,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+    private final RequestRepositoryJpa requestRepositoryJpa;
     private final EventRepositoryJpa eventRepositoryJpa;
+    private final UserRepositoryJpa userRepositoryJpa;
     private final CommentRepositoryJpa commentRepositoryJpa;
     private final CommentMapper commentMapper;
     private final Validation validation;
 
-    public CommentDto addCommentPrivate(Long userId, Long eventId, NewCommentDto newCommentDto) {
+    public CommentDto addComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
         validation.validateUser(userId);
         validation.validateEvent(eventId);
         if (eventRepositoryJpa.findById(eventId).get().getCommentAvailable() == false)
@@ -38,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
-    public CommentDto updateCommentPrivate(Long userId, UpdateCommentDto updateCommentDto) {
+    public CommentDto updateComment(Long userId, UpdateCommentDto updateCommentDto) {
         validation.validateUser(userId);
         validation.validateComment(updateCommentDto.getId());
         validation.validateCommentOwner(userId, updateCommentDto.getId());
@@ -51,10 +54,22 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
+    public CommentDto updateCommentAdmin(UpdateCommentDto updateCommentDto) {
+        validation.validateComment(updateCommentDto.getId());
+        Comment comment = commentRepositoryJpa.findById(updateCommentDto.getId()).get();
+        if (updateCommentDto.getCommentText() != null) comment.setCommentText(updateCommentDto.getCommentText());
+        if (eventRepositoryJpa.findById(comment.getEvent().getId()).get().getCommentModeration() == true) {
+            comment.setPublished(false);
+        }
+        commentRepositoryJpa.save(comment);
+        return commentMapper.toCommentDto(comment);
+    }
+
     public List<CommentDto> getAllCommentsPrivate(Long ownerId, Boolean onlyPublished, int from, int size) {
         validation.validateUser(ownerId);
+        List<Boolean> listPublished = onlyPublished ? List.of(true) : List.of(true, false);
         Pageable pageable = PageRequest.of(from / size, size);
-        return commentRepositoryJpa.getAllCommentsPrivate(ownerId, onlyPublished, pageable).stream()
+        return commentRepositoryJpa.getAllCommentsPrivate(ownerId, listPublished, pageable).stream()
                 .map(p -> commentMapper.toCommentDto(p))
                 .collect(Collectors.toList());
     }
@@ -67,6 +82,7 @@ public class CommentServiceImpl implements CommentService {
 
     public CommentDto publishCommentUserPrivate(Long ownerId, Long commentId) {
         validation.validateUser(ownerId);
+        validation.validateComment(commentId);
         validation.validateCommentOwner(ownerId, commentId);
         Comment comment = commentRepositoryJpa.findById(commentId).get();
         if (eventRepositoryJpa.findById(comment.getEvent().getId()).get().getCommentModeration())
@@ -80,21 +96,21 @@ public class CommentServiceImpl implements CommentService {
 
     public void deleteCommentByIdPrivate(Long ownerId, Long commentId) {
         validation.validateUser(ownerId);
-        validation.validateComment(commentId);
         validation.validateCommentOwner(ownerId, commentId);
         commentRepositoryJpa.deleteById(commentId);
     }
 
-    public List<ShortCommentDto> getAllCommentsByEventPrivate(Long eventId, int from, int size) {
+    public List<ShortCommentDto> getAllCommentsByEventPub(Long eventId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        return commentRepositoryJpa.getAllCommentsPublic(pageable).stream()
+        validation.validateEvent(eventId);
+        return commentRepositoryJpa.getAllCommentsPublic(eventId, State.PUBLISHED, pageable).stream()
                 .map(p -> commentMapper.toShortCommentDto(p))
                 .collect(Collectors.toList());
     }
 
     public ShortCommentDto getCommentByIdPublic(Long commentId) {
         validation.validateComment(commentId);
-        return commentMapper.toShortCommentDto(commentRepositoryJpa.findById(commentId).get());
+        return commentMapper.toShortCommentDto(commentRepositoryJpa.findById(commentId, State.PUBLISHED));
     }
 
     public List<CommentDto> getAllCommentsAdmin(Long ownerId, Long commenterId, Boolean onlyPublished,
@@ -112,20 +128,5 @@ public class CommentServiceImpl implements CommentService {
         return comments.stream()
                 .map(p -> commentMapper.toCommentDto(p))
                 .collect(Collectors.toList());
-    }
-
-    public CommentDto updateCommentAdmin(UpdateCommentDto updateCommentDto) {
-        validation.validateComment(updateCommentDto.getId());
-        Comment comment = commentRepositoryJpa.findById(updateCommentDto.getId()).get();
-        if (updateCommentDto.getCommentText() != null) comment.setCommentText(updateCommentDto.getCommentText());
-        if (eventRepositoryJpa.findById(comment.getEvent().getId()).get().getCommentModeration() == true) {
-            comment.setPublished(false);
-        }
-        commentRepositoryJpa.save(comment);
-        return commentMapper.toCommentDto(comment);
-    }
-    public void deleteCommentByIdAdmin(Long commentId) {
-        validation.validateComment(commentId);
-        commentRepositoryJpa.deleteById(commentId);
     }
 }

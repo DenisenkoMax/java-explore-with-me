@@ -25,19 +25,20 @@ import java.util.List;
 public class PrivateCommentController {
     private final CommentService commentService;
 
+    //Добавление комментария пользователем
     @PostMapping("/{eventId}")
     public CommentDto addComment(@PathVariable Long userId,
                                  @PathVariable Long eventId,
                                  @Valid @RequestBody NewCommentDto newCommentDto) {
         log.info("Добавление комментария от текущего пользователя {} к событию  {}", userId, eventId);
-        return commentService.addCommentPrivate(userId, eventId, newCommentDto);
+        return commentService.addComment(userId, eventId, newCommentDto);
     }
-
+    //Обновление комментария
     @PutMapping
     public CommentDto updateComment(@PathVariable Long userId,
                                     @Valid @RequestBody UpdateCommentDto updateCommentDto) {
         log.info("Обновление комментария  с id {} ", updateCommentDto.getId());
-        return commentService.updateCommentPrivate(userId, updateCommentDto);
+        return commentService.updateComment(userId, updateCommentDto);
     }
 
     @GetMapping
@@ -60,15 +61,15 @@ public class PrivateCommentController {
     }
 
     @PatchMapping("/{commentId}/publish")
-    public CommentDto publishEvent(@PathVariable Long userId, @PathVariable Long eventId) {
-        log.info("Одобрение на модерацию комментария {} пользователем {}",eventId, userId);
-        return commentService.publishCommentUserPrivate(userId, eventId);
+    public CommentDto publishEvent(@PathVariable Long userId, @PathVariable Long commentId) {
+        log.info("Одобрение на модерацию комментария {} пользователем {}",commentId, userId);
+        return commentService.publishCommentUserPrivate(userId, commentId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{commentId}")
     public void deleteCommentById(@PathVariable Long userId,
                                   @PathVariable Long commentId) {
-        log.info("Запрос на удаление комментария {} на событие пользователя {}",commentId, userId);
-        commentService.deleteCommentByIdPrivate(userId, commentId);
+        log.info("Запрос на удаление комментария {} на событие пользователя {}", userId);
+            commentService.deleteCommentByIdPrivate(userId, commentId);
     }
 }

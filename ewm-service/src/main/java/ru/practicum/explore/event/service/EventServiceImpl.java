@@ -74,7 +74,6 @@ public class EventServiceImpl implements EventService {
         event.setInitiator(userRepositoryJpa.findById(userId).get());
         event.setCategory(categoryRepositoryJpa.findById(newEventDto.getCategory()).get());
         event.setInitiator(userRepositoryJpa.findById(userId).get());
-        event.setCategory(categoryRepositoryJpa.findById(newEventDto.getCategory()).get());
         event = setViews(List.of(event)).get(0);
         event = eventRepositoryJpa.save(event);
         return eventMapper.toEventFullDto(event);

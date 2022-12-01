@@ -24,7 +24,7 @@ import java.util.List;
         consumes = MediaType.ALL_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
 )
-public class PrivateEventController {
+public class    PrivateEventController {
     private final EventService eventService;
 
     @GetMapping("/{userId}/events")

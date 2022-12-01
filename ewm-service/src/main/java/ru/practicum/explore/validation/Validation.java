@@ -61,7 +61,7 @@ public class Validation {
     }
 
     public void validateComment(Long commentId) throws NotFoundEx {
-        if (!commentRepositoryJpa.findById(commentId).isEmpty()) {
+        if (commentRepositoryJpa.findById(commentId).isEmpty()) {
             throw new NotFoundEx("commentId", commentId);
         }
     }

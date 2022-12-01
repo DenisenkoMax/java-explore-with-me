@@ -44,10 +44,4 @@ public class AdminCommentController {
         log.info("Обновление комментария  с id {} ", updateCommentDto.getId());
         return commentService.updateCommentAdmin(updateCommentDto);
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteCommentById(@PathVariable Long commentId) {
-        log.info("Запрос на удаление комментария {}", commentId);
-        commentService.deleteCommentByIdAdmin(commentId);
-    }
 }

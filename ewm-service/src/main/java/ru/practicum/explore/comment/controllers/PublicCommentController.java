@@ -22,16 +22,21 @@ import java.util.List;
 public class PublicCommentController {
     private final CommentService commentService;
 
-    @GetMapping("/{eventsId}")
+    //Получение любым пользователем коротких комментарием (только опубликованным) к нужному событию (только опубликованному)
+    @GetMapping("/event/{eventId}")
     public List<ShortCommentDto> getAllCommentsByEvent(@PathVariable Long eventId,
-                                                       @PositiveOrZero @RequestParam(value = "from", defaultValue = "0")
+                                                       @PositiveOrZero
+                                                       @RequestParam(value = "from", defaultValue = "0")
                                                        Integer from,
-                                                       @Positive @RequestParam(value = "size", defaultValue = "10")
+                                                       @Positive
+                                                       @RequestParam(value = "size", defaultValue = "10")
                                                        Integer size) {
-        log.info("Запрос на получение комментариев на событие {}", eventId);
-        return commentService.getAllCommentsByEventPrivate(eventId, from, size);
+        log.info("Запрос на получение опубликованных комментариев на событие {}", eventId);
+        return commentService.getAllCommentsByEventPub(eventId, from, size);
     }
 
+    //Получение любым пользователем комментарием с необходимым номером (только опубликованным)
+    // к любым только к опубликованным событиям(только опубликованному)
     @GetMapping("/{commentId}")
     public ShortCommentDto getCommentById(@PathVariable Long commentId) {
         log.info("Запрос на получение комментария {}", commentId);
