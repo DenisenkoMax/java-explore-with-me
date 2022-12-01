@@ -5,14 +5,11 @@ import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.comment.repository.CommentRepositoryJpa;
 import ru.practicum.explore.event.model.State;
 import ru.practicum.explore.event.repository.EventRepositoryJpa;
-import ru.practicum.explore.request.repository.RequestRepositoryJpa;
-import ru.practicum.explore.user.repository.UserRepositoryJpa;
 import ru.practicum.explore.validation.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-    private final RequestRepositoryJpa requestRepositoryJpa;
     private final EventRepositoryJpa eventRepositoryJpa;
-    private final UserRepositoryJpa userRepositoryJpa;
     private final CommentRepositoryJpa commentRepositoryJpa;
     private final CommentMapper commentMapper;
     private final Validation validation;
