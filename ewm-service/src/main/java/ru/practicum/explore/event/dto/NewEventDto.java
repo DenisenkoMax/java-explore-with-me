@@ -35,5 +35,7 @@ public class NewEventDto {
     private Boolean requestModeration;
     @NotBlank
     private String title;
+    private Boolean commentAvailable;
+    private Boolean commentModeration;
 
 }
