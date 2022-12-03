@@ -22,7 +22,7 @@ public class Event implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "annotation",nullable = false)
+    @Column(name = "annotation", nullable = false)
     private String annotation;
 
     @Column(name = "title", nullable = false)
@@ -71,10 +71,10 @@ public class Event implements Serializable {
     private List<Compilation> compilations;
     @Transient
     private Integer views;
-    @JoinColumn(name = "comment available")
+    @JoinColumn(name = "comment_available")
     @ToString.Exclude
     private Boolean commentAvailable;
-    @JoinColumn(name = "comment moderation")
+    @JoinColumn(name = "comment_moderation")
     @ToString.Exclude
     private Boolean commentModeration;
 }

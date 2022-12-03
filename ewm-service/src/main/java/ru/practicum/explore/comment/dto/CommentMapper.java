@@ -15,35 +15,36 @@ public class CommentMapper {
     private final UserRepositoryJpa userRepositoryJpa;
 
     public Comment toComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
-        if (newCommentDto == null) return null;
-        else return new Comment(
-                0L,
-                LocalDateTime.now(),
-                false,
-                newCommentDto.getCommentText(),
-                eventRepositoryJpa.findById(eventId).isEmpty() ? null : eventRepositoryJpa.findById(eventId).get(),
-                userRepositoryJpa.findById(userId).isEmpty() ? null : userRepositoryJpa.findById(userId).get()
-        );
+        return (newCommentDto == null) ? null :
+                new Comment(
+                        0L,
+                        LocalDateTime.now(),
+                        false,
+                        newCommentDto.getCommentText(),
+                        eventRepositoryJpa.findById(eventId).isEmpty() ? null : eventRepositoryJpa.findById(eventId)
+                                .get(),
+                        userRepositoryJpa.findById(userId).isEmpty() ? null : userRepositoryJpa.findById(userId).get()
+                );
     }
 
     public CommentDto toCommentDto(Comment comment) {
-        if (comment == null) return null;
-        else return new CommentDto(
-                comment.getId(),
-                comment.getCreated(),
-                comment.getCommenter().getId(),
-                comment.getEvent().getId(),
-                comment.getCommentText(),
-                comment.getPublished()
-        );
+        return (comment == null) ? null :
+                new CommentDto(
+                        comment.getId(),
+                        comment.getCreated(),
+                        comment.getCommenter().getId(),
+                        comment.getEvent().getId(),
+                        comment.getCommentText(),
+                        comment.getPublished()
+                );
     }
 
     public ShortCommentDto toShortCommentDto(Comment comment) {
-        if (comment == null) return null;
-        else return new ShortCommentDto(
-                comment.getCommenter().getId(),
-                comment.getEvent().getId(),
-                comment.getCommentText()
-        );
+        return (comment == null) ? null :
+                new ShortCommentDto(
+                        comment.getCommenter().getId(),
+                        comment.getEvent().getId(),
+                        comment.getCommentText()
+                );
     }
 }

@@ -35,7 +35,7 @@ public class AdminCommentController {
                                                 @Positive
                                                 @RequestParam(value = "size", defaultValue = "10")
                                                 Integer size) {
-        log.info("Запрос на получение списка комментариев статус публикации {}", onlyPublished);
+        log.info("Запрос на получение списка комментариев с парамерами: только опубликованные = {}", onlyPublished);
         return commentService.getAllCommentsAdmin(ownerId, commenterId, onlyPublished, from, size);
     }
 

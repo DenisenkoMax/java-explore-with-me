@@ -25,8 +25,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto addComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
         validation.validateUser(userId);
         validation.validateEvent(eventId);
-        if (eventRepositoryJpa.findById(eventId).get().getCommentAvailable() == false)
-            throw new IllegalArgumentException("Комментирование события с id " + eventId + "запрещено");
+        validation.validateCommentAvailable(eventId);
         Comment comment = commentMapper.toComment(userId, eventId, newCommentDto);
         if (eventRepositoryJpa.findById(eventId).get().getCommentModeration() == true) {
             comment.setPublished(false);
@@ -81,10 +80,8 @@ public class CommentServiceImpl implements CommentService {
         validation.validateComment(commentId);
         validation.validateCommentOwner(ownerId, commentId);
         Comment comment = commentRepositoryJpa.findById(commentId).get();
-        if (eventRepositoryJpa.findById(comment.getEvent().getId()).get().getCommentModeration())
-            throw new IllegalArgumentException("Модерация комментариев к данному событию не требуется");
-        if (comment.getPublished())
-            throw new IllegalArgumentException("Событие " + commentId + " уже прошло модерацию и опубликовано");
+        validation.validateCommentModeration(comment);
+        validation.validateAlreadyModeration(comment);
         comment.setPublished(true);
         commentRepositoryJpa.save(comment);
         return commentMapper.toCommentDto(comment);

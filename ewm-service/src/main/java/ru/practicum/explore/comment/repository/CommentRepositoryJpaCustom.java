@@ -10,30 +10,30 @@ import java.util.List;
 
 public interface CommentRepositoryJpaCustom extends JpaRepository<Comment, Long> {
     @Query(
-            "SELECT c FROM Comment c WHERE (c.event.initiator.id = ?1) " +
-                    "AND (c.published IN ?2)")
+            "SELECT c FROM Comment c WHERE (c.event.initiator.id = :ownerId) " +
+                    "AND (c.published IN :listPublished)")
     List<Comment> getAllCommentsPrivate(Long ownerId, List<Boolean> listPublished, Pageable pageable);
 
     @Query(
-            "SELECT c FROM Comment c WHERE c.published = true AND c.event.state = ?2 AND c.event.id= ?1")
+            "SELECT c FROM Comment c WHERE c.published = true AND c.event.state = :state AND c.event.id= :eventId")
     List<Comment> getAllCommentsPublic(Long eventId, State state, Pageable pageable);
 
     @Query(
-            "SELECT c FROM Comment c WHERE c.id = ?1 AND c.event.state = ?2")
+            "SELECT c FROM Comment c WHERE c.id = :commentId AND c.event.state = :state")
     Comment findById(Long commentId, State state);
 
     @Query(
-            "SELECT c FROM Comment c WHERE (c.event.initiator.id = ?1) AND " +
-                    "(c.commenter.id = ?2) AND (c.published = ?3)")
+            "SELECT c FROM Comment c WHERE (c.event.initiator.id = :ownerId) AND " +
+                    "(c.commenter.id = :commenterId) AND (c.published = :onlyPublished)")
     List<Comment> getAllByOwnerAndCommenterOnlyPubAdmin(Long ownerId, Long commenterId,
                                                         Boolean onlyPublished, Pageable pageable);
 
-    @Query("SELECT c FROM Comment c WHERE (c.event.initiator.id = ?1) AND (c.published = ?2)")
+    @Query("SELECT c FROM Comment c WHERE (c.event.initiator.id = :ownerId) AND (c.published = :onlyPublished)")
     List<Comment> getAllByOwnerOnlyPubAdmin(Long ownerId, Boolean onlyPublished, Pageable pageable);
 
-    @Query("SELECT c FROM Comment c WHERE (c.commenter.id = ?1) AND (c.published = ?2)")
+    @Query("SELECT c FROM Comment c WHERE (c.commenter.id = :commenterId) AND (c.published = :onlyPublished)")
     List<Comment> getAllByCommenterOnlyPubAdmin(Long commenterId, Boolean onlyPublished, Pageable pageable);
 
-    @Query("SELECT c FROM Comment c WHERE c.published = ?1")
+    @Query("SELECT c FROM Comment c WHERE c.published = :onlyPublished")
     List<Comment> getAllByOnlyPubAdmin(Boolean onlyPublished, Pageable pageable);
 }

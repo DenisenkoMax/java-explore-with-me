@@ -3,6 +3,7 @@ package ru.practicum.explore.validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.repository.CategoryRepositoryJpa;
+import ru.practicum.explore.comment.model.Comment;
 import ru.practicum.explore.comment.repository.CommentRepositoryJpa;
 import ru.practicum.explore.compilation.repository.CompilationRepositoryJpa;
 import ru.practicum.explore.event.model.Event;
@@ -25,6 +26,22 @@ public class Validation {
     private final CompilationRepositoryJpa compilationRepositoryJpa;
     private final CommentRepositoryJpa commentRepositoryJpa;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public void validateCommentAvailable(Long eventId) {
+        if (eventRepositoryJpa.findById(eventId).get().getCommentAvailable() == false)
+            throw new IllegalArgumentException("Комментирование события с id " + eventId + "запрещено");
+    }
+
+    public void validateCommentModeration(Comment comment) {
+        if (eventRepositoryJpa.findById(comment.getEvent().getId()).get().getCommentModeration())
+            throw new IllegalArgumentException("Модерация комментариев к данному событию не требуется");
+    }
+
+    public void validateAlreadyModeration(Comment comment) {
+        if (comment.getPublished())
+            throw new IllegalArgumentException("Событие " + comment.getId() +
+                    " уже прошло модерацию ранее");
+    }
 
     public void validateDate(LocalDateTime start, LocalDateTime end) throws IllegalArgumentException {
         if (end.isBefore(start)) {
@@ -56,7 +73,8 @@ public class Validation {
 
     public void validateCommentOwner(Long userId, Long commentId) {
         if (!commentRepositoryJpa.findById(commentId).get().getCommenter().getId().equals(userId)) {
-            throw new IllegalArgumentException("Вы не являетесь инициатором события");
+            throw new IllegalArgumentException("Вы не являетесь инициатором события" +
+                    commentRepositoryJpa.findById(commentId).get().getEvent().getId());
         }
     }
 
@@ -68,7 +86,7 @@ public class Validation {
 
     public void validateEventOwner(Long userId, Long eventId) {
         if (!eventRepositoryJpa.findById(eventId).get().getInitiator().getId().equals(userId)) {
-            throw new IllegalArgumentException("Вы не являетесь инициатором события");
+            throw new IllegalArgumentException("Вы не являетесь инициатором события " + eventId);
         }
     }
 
